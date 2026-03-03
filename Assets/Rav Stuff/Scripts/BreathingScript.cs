@@ -6,35 +6,60 @@ using UnityEngine.UI;
 public class BreathingScript : MonoBehaviour
 {
     [Header("Breathing variables")]
+    public KeyCode breatheKey;
     [SerializeField] Slider oxygenBar;
     [SerializeField] float breath, rateOfInhale, rateOfExhale;
-    public float maxBreathRate, rateOfBarUpdate;
+    public float maxBreath, rateOfBarUpdate;
+
+
+    [Header("Rate Calculation Variables")]
+    [SerializeField] float timeWhenLastInhale;
+    public float rateOfBreathing;
+
 
     [Header("Passing Out variables")]
     [SerializeField] float lastBreathSinceHolding;
-    [SerializeField] float holdingBreathThreshold, passOutTimer, passOutThreshold, timeTillWakeUp;
-    [SerializeField] bool isBreathBeingHeld = false, isPassedOut = false;
+    [SerializeField] float holdingBreathThreshold, passOutTimer, passOutThreshold;
+    [SerializeField] bool isBreathBeingHeld = false;
+    private PassedOutScript passedOut;
+
+    private void Start()
+    {
+        passedOut = GetComponent<PassedOutScript>();
+    }
 
     private void Update()
     {
+
         //decreasing rate to simulate exhaling
         breath -= rateOfExhale * Time.deltaTime;
         //Capping rate between 0 and max Breath Rate
         if (breath < 0) breath = 0;
-        if (breath > maxBreathRate) breath = maxBreathRate;
+        if (breath > maxBreath) breath = maxBreath;
 
         //taking a breath. Player is forced to hold M to breathe emulating what its like to breathe in real life.
-        if (Input.GetKey(KeyCode.M))
+        if (Input.GetKey(breatheKey) && !passedOut.value)
         {
             breath += rateOfInhale * Time.deltaTime;
         }
 
         //updating oxygen bar slider values
-        if (oxygenBar.value < breath / maxBreathRate) oxygenBar.value += rateOfBarUpdate * Time.deltaTime;
-        if (oxygenBar.value > breath / maxBreathRate) oxygenBar.value -= rateOfBarUpdate * Time.deltaTime;
+        if (oxygenBar.value < breath / maxBreath) oxygenBar.value += rateOfBarUpdate * Time.deltaTime;
+        if (oxygenBar.value > breath / maxBreath) oxygenBar.value -= rateOfBarUpdate * Time.deltaTime;
+
+
+        /*
+        //Calculating Rate of Breathing
+        if (Input.GetKeyDown(breatheKey)) timeWhenLastInhale = Time.time;
+
+        float difference = Time.time - timeWhenLastInhale;
+        rateOfBreathing = 1 / difference;
+        */
+
+
 
         //Checking for player holding breath
-        if (!isPassedOut)
+        if (!passedOut.value)
         {
             //if breath was in a certain range {holdingBreathThreshold} of a previous breath value
             if (breath > lastBreathSinceHolding - holdingBreathThreshold &&
@@ -55,23 +80,20 @@ public class BreathingScript : MonoBehaviour
             //if passOutTimer is past a set threshold, call pass out function.
             if (passOutTimer > passOutThreshold)
             {
-                Debug.Log("PASSED OUT");
-                passOutTimer = 0;
-                isPassedOut = true;
-                StartCoroutine(passedOut());
+                Debug.Log("Passed out due to holding breath");
+                StartCoroutine(passedOut.passedOutTimer());
             }
         }
-        
+
+
 
     }
 
-
-    //counts up till 'timeTillWakeUp' and then sets isPassedOut to true. Need to implement any animation coding here.
-    private IEnumerator passedOut()
+    //is called when player wakes up from having passed out
+    public void Reset()
     {
-        yield return new  WaitForSeconds(timeTillWakeUp);
-        isPassedOut = false;
+        Debug.Log("Breathing script reset called");
+        passOutTimer = 0;
     }
-
 
 }
