@@ -9,12 +9,10 @@ public class BarScript : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log("Spacebar pressed");
             timeOfLastBreath = Time.time;
         }
 
         oxygenRate = 1 / (Time.time - timeOfLastBreath);
-        Debug.Log(Time.time);
         oxygenBar.value = oxygenRate;
     }
 }
