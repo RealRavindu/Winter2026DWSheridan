@@ -2701,6 +2701,7 @@ MonoBehaviour:
   rateOfExhale: 0.25
   maxBreath: 0.5
   rateOfBarUpdate: 1
+  currentBreath: 0
   maxBarSpeed: 0
   barColor:
     serializedVersion: 2
@@ -3003,6 +3004,14 @@ PrefabInstance:
       propertyPath: cursorInputForLook
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8616685848737228371, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
+      propertyPath: BreathingScript
+      value: 
+      objectReference: {fileID: 135756641613574981}
+    - target: {fileID: 8616685848737228371, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
+      propertyPath: BloodPumpingScript
+      value: 
+      objectReference: {fileID: 135756641613574982}
     - target: {fileID: 8616685848737228371, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
       propertyPath: CameraTurningSpeed
       value: 100
