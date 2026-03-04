@@ -9,8 +9,8 @@ public class BreathingScript : MonoBehaviour
     [Header("Breathing variables")]
     public KeyCode breatheKey;
     [SerializeField] Slider oxygenBar;
-    [SerializeField] float breath, rateOfInhale, rateOfExhale;
-    public float maxBreath, rateOfBarUpdate;
+    public float breath, rateOfInhale, rateOfExhale;
+    public float maxBreath, rateOfBarUpdate, currentBreath;
 
     [Header("Bar rate Calc Variables")]
     [SerializeField] float maxBarSpeed;
@@ -31,6 +31,9 @@ public class BreathingScript : MonoBehaviour
 
     private void Update()
     {
+        //sets the currentBreath value to breath so currentBreath can be referenced in other scripts.
+        currentBreath = breath;
+
 
         //decreasing rate to simulate exhaling
         breath -= rateOfExhale * Time.deltaTime;
