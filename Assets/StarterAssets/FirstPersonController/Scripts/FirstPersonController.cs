@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿//using UnityEditor.ShaderGraph.Internal;
+using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
@@ -20,6 +21,10 @@ namespace StarterAssets
 		public float RotationSpeed = 1.0f;
 		[Tooltip("Acceleration and deceleration")]
 		public float SpeedChangeRate = 10.0f;
+
+        [Header("New Camera Stuff")]
+        public float CameraTurningSpeed;
+
 
 		[Space(10)]
 		[Tooltip("The height the player can jump")]
@@ -115,6 +120,7 @@ namespace StarterAssets
 			JumpAndGravity();
 			GroundedCheck();
 			Move();
+			test();
 		}
 
 		private void LateUpdate()
@@ -132,23 +138,23 @@ namespace StarterAssets
 		private void CameraRotation()
 		{
 			// if there is an input
-			if (_input.look.sqrMagnitude >= _threshold)
-			{
-				//Don't multiply mouse input by Time.deltaTime
-				float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+			//if (_input.look.sqrMagnitude >= _threshold)
+			//{
+			//	//Don't multiply mouse input by Time.deltaTime
+			//	float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 				
-				_cinemachineTargetPitch += _input.look.y * RotationSpeed * deltaTimeMultiplier;
-				_rotationVelocity = _input.look.x * RotationSpeed * deltaTimeMultiplier;
+			//	_cinemachineTargetPitch += _input.look.y * RotationSpeed * deltaTimeMultiplier;
+			//	_rotationVelocity = _input.look.x * RotationSpeed * deltaTimeMultiplier;
 
-				// clamp our pitch rotation
-				_cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
+			//	// clamp our pitch rotation
+			//	_cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
 
-				// Update Cinemachine camera target pitch
-				CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch, 0.0f, 0.0f);
+			//	// Update Cinemachine camera target pitch
+			//	CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch, 0.0f, 0.0f);
 
-				// rotate the player left and right
-				transform.Rotate(Vector3.up * _rotationVelocity);
-			}
+			//	// rotate the player left and right
+			//	transform.Rotate(Vector3.up * _rotationVelocity);
+			//}
 		}
 
 		private void Move()
@@ -264,5 +270,32 @@ namespace StarterAssets
 			// when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
 			Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z), GroundedRadius);
 		}
-	}
+        private void test()
+        {
+            if (Keyboard.current.numpad4Key.isPressed)
+            {
+                transform.Rotate(Vector3.down * (CameraTurningSpeed * Time.deltaTime));
+                Debug.Log("turning left");
+            }
+            if (Keyboard.current.numpad6Key.isPressed)
+            {
+                transform.Rotate(Vector3.up * (CameraTurningSpeed * Time.deltaTime));
+                Debug.Log("turning right");
+            }
+			if (Keyboard.current.numpad5Key.isPressed)
+			{
+				_cinemachineTargetPitch += 1 * (CameraTurningSpeed * Time.deltaTime);
+                _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
+                CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch,0f,0f); 
+				Debug.Log("turning down");
+			}
+            if (Keyboard.current.numpad8Key.isPressed)
+            {
+                _cinemachineTargetPitch -= 1 * (CameraTurningSpeed * Time.deltaTime);
+                _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
+                CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch, 0f, 0f);
+                Debug.Log("turning up");
+            }
+        }
+    }
 }
