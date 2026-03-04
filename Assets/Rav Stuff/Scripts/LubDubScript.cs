@@ -15,6 +15,7 @@ public class LubDubScript : MonoBehaviour
     //fainting values
     public float redlineLimit; //maximum heart rate
     public float stallLimit; //minimum heart rate
+    public float faintTimer = 10f;
 
 
     //stores time between inputs
@@ -85,6 +86,8 @@ public class LubDubScript : MonoBehaviour
         {
             heartRate = doubleBeatRatio / beatInterval;
         }
+
+        Faint();
     }
 
     /// <summary>
@@ -130,16 +133,19 @@ public class LubDubScript : MonoBehaviour
         }
         Debug.Log($"beats = {inputCount}");
     }
-    //take the input
-    //start the timer
-    //take second input
-    //if fail, flash heart icon and horizontal shake (representing negative nod)
-    //if succeed, add 1 to heart beat count.
 
-    //calculating heart rate
-    //save first input
-    //save last input
-    //difference between the time of both of them
-    //rate is 1/difference
-    //this rate
+    private void Faint()
+    {
+        if (heartRate > redlineLimit || heartRate < stallLimit)
+        {
+            faintTimer -= Time.deltaTime;
+        }
+        
+        if (faintTimer < 0)
+        {
+            Debug.Log("Player has feinted");
+            faintTimer = 0;
+            //Passout script here
+        }
+    }
 }
