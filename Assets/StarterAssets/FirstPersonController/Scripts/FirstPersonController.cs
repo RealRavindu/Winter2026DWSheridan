@@ -121,6 +121,8 @@ namespace StarterAssets
 			GroundedCheck();
 			Move();
 			test();
+
+			
 		}
 
 		private void LateUpdate()
