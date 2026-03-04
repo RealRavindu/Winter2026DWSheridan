@@ -12,9 +12,10 @@ public class BloodPumpingScript : MonoBehaviour
     private float secondInput;
     private float difference;
     [SerializeField] float differenceCheck;
-    [SerializeField] float rate;
+    public float rate;
     public float maxBloodRate;
     [SerializeField] float faintThreshold;
+    [SerializeField] Gradient barColor;
     public float rateOfBarUpdate;
     private PassedOutScript passedOut;
 
@@ -56,6 +57,9 @@ public class BloodPumpingScript : MonoBehaviour
         if (bloodBar.value > rate / maxBloodRate) bloodBar.value -= rateOfBarUpdate * Time.deltaTime;
 
 
+        //changing color of bar
+        Image bar = bloodBar.transform.GetChild(1).GetChild(0).GetComponent<Image>();
+        bar.color = barColor.Evaluate(differenceCheck / faintThreshold);
 
     }
 

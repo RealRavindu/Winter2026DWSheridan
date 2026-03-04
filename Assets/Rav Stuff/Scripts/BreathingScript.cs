@@ -5,17 +5,17 @@ using UnityEngine.UI;
 
 public class BreathingScript : MonoBehaviour
 {
+
     [Header("Breathing variables")]
     public KeyCode breatheKey;
     [SerializeField] Slider oxygenBar;
     [SerializeField] float breath, rateOfInhale, rateOfExhale;
     public float maxBreath, rateOfBarUpdate;
 
-
-    [Header("Rate Calculation Variables")]
-    [SerializeField] float timeWhenLastInhale;
-    public float rateOfBreathing;
-
+    [Header("Bar rate Calc Variables")]
+    [SerializeField] float maxBarSpeed;
+    private BloodPumpingScript bloodScript;
+    [SerializeField] Gradient barColor;
 
     [Header("Passing Out variables")]
     [SerializeField] float lastBreathSinceHolding;
@@ -26,6 +26,7 @@ public class BreathingScript : MonoBehaviour
     private void Start()
     {
         passedOut = GetComponent<PassedOutScript>();
+        bloodScript = GetComponent<BloodPumpingScript>();
     }
 
     private void Update()
@@ -49,14 +50,15 @@ public class BreathingScript : MonoBehaviour
 
 
         /*
-        //Calculating Rate of Breathing
+        //Calculating Rate of Breathing IMPORTANT: Possibly not needed!!!!
         if (Input.GetKeyDown(breatheKey)) timeWhenLastInhale = Time.time;
 
         float difference = Time.time - timeWhenLastInhale;
         rateOfBreathing = 1 / difference;
         */
 
-
+        //Updating rate of bar change so that the slider updates faster depending on blood pump rate
+        //rateOfBarUpdate = bloodScript.rate / maxBarSpeed;
 
         //Checking for player holding breath
         if (!passedOut.value)
@@ -85,7 +87,9 @@ public class BreathingScript : MonoBehaviour
             }
         }
 
-
+        //changing color of bar
+        Image bar = oxygenBar.transform.GetChild(1).GetChild(0).GetComponent<Image>();
+        bar.color = barColor.Evaluate(passOutTimer / passOutThreshold);
 
     }
 
