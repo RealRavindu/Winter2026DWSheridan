@@ -17,6 +17,7 @@ public class BloodPumpingScript : MonoBehaviour
     [SerializeField] float faintThreshold;
     [SerializeField] Gradient barColor;
     public float rateOfBarUpdate;
+    [SerializeField] float differenceModifier; //for increasing/decreasing how much one input fills the bar
     private PassedOutScript passedOut;
 
     private void Start()
@@ -33,7 +34,7 @@ public class BloodPumpingScript : MonoBehaviour
                 InputWithInterval();
             }
         }
-        difference = Time.time - firstInput;
+        difference = (Time.time - firstInput)*differenceModifier;
         rate = 1 / difference;
 
         if (!passedOut.value)
@@ -75,7 +76,7 @@ public class BloodPumpingScript : MonoBehaviour
             firstInput = Time.time;
             secondInput = firstInput;
         }
-        difference = secondInput - firstInput;
+        difference = (secondInput - firstInput)*differenceModifier;
 
 
     }
