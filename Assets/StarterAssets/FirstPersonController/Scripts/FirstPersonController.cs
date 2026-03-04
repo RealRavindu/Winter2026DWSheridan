@@ -25,6 +25,11 @@ namespace StarterAssets
         [Header("New Camera Stuff")]
         public float CameraTurningSpeed;
 
+		[Header("Breathing Script Reference")]
+		public BreathingScript BreathingScript;
+		[Header("Blood Pumping script reference")]
+		public BloodPumpingScript BloodPumpingScript;
+
 
 		[Space(10)]
 		[Tooltip("The height the player can jump")]
@@ -113,17 +118,19 @@ namespace StarterAssets
 			// reset our timeouts on start
 			_jumpTimeoutDelta = JumpTimeout;
 			_fallTimeoutDelta = FallTimeout;
+
 		}
 
 		private void Update()
 		{
-			JumpAndGravity();
+            float currentBreath = BreathingScript.currentBreath;
+
+            JumpAndGravity();
 			GroundedCheck();
 			Move();
 			test();
-
-			
-		}
+            
+        }
 
 		private void LateUpdate()
 		{
@@ -223,7 +230,7 @@ namespace StarterAssets
 				if (_input.jump && _jumpTimeoutDelta <= 0.0f)
 				{
 					// the square root of H * -2 * G = how much velocity needed to reach desired height
-					_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+					_verticalVelocity = Mathf.Sqrt(JumpHeight * ((BloodPumpingScript.rate/2) + BreathingScript.breath + 0.25f) * -2f * Gravity);
 				}
 
 				// jump timeout

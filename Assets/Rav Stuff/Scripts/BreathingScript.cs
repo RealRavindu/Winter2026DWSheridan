@@ -9,8 +9,8 @@ public class BreathingScript : MonoBehaviour
     [Header("Breathing variables")]
     public KeyCode breatheKey;
     [SerializeField] Slider oxygenBar;
-    [SerializeField] float breath, rateOfInhale, rateOfExhale;
-    public float maxBreath, rateOfBarUpdate;
+    public float breath, rateOfInhale, rateOfExhale;
+    public float maxBreath, rateOfBarUpdate, currentBreath;
 
     [Header("Bar rate Calc Variables")]
     [SerializeField] float maxBarSpeed;
