@@ -45,7 +45,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Blur: 0.050032277
+    - _Blur: 0.0067011346
     - _BlurCycles: 3
     - _BlurMultipiler: 1
     - _BlurSamplesPerCycle: 2
