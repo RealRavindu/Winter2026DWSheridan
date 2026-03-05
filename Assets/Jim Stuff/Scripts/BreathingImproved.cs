@@ -9,8 +9,8 @@ public class BreathingImproved : MonoBehaviour
     private float heartRedline;
     private float heartStall;
 
-    private float airCapacity = 0; //amount of air in the lungs
-    private float airMaxCapacity = 100; //maximum capacity of lungs
+    public float airCapacity = 0; //amount of air in the lungs
+    public float airMaxCapacity = 100; //maximum capacity of lungs
     private float airFlow; //base intake of lungs
     private float airFlowModified; //intake of lungs modified by heart rate
     private float breathTimer;
