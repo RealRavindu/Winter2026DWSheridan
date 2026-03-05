@@ -52,6 +52,6 @@ public class PassedOutScript : MonoBehaviour
             vignette.intensity.value = Mathf.Lerp(startingIntensity, endIntensity, t);
             yield return null;
         }
-        if (!wakingUp) StartCoroutine(wakingupscript.WakeUpSequence(0, 0));
+        if (!wakingUp) StartCoroutine(wakingupscript.WakeUpSequence(false));
     }
 }
