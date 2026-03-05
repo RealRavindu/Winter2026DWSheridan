@@ -13,26 +13,33 @@ public class PassedOutScript : MonoBehaviour
     [SerializeField] Volume volume;
     private Vignette vignette;
     public float faintTime;
+    private WakingUpScript wakingupscript;
+
+
+    public Coroutine passingOutCR;
 
     private void Start()
     {
         controller = GetComponent<FirstPersonController>();
+        wakingupscript = GetComponent<WakingUpScript>();
+
         if(!volume.profile.TryGet(out vignette))
         {
             Debug.Log("Vignette effect not found");
         }
     }
+
+    public void PassOut()
+    {
+        if (passingOutCR == null) passingOutCR = StartCoroutine(passingOut());
+    }
     //counts up till 'timeTillWakeUp' and then sets isPassedOut to true. Need to implement any animation coding here.
-    public IEnumerator passedOutTimer()
+    public IEnumerator passingOut()
     {
         controller.enabled = false;
         value = true;
         StartCoroutine(VignetteChanger(false, vignette.intensity.value, 0));
-        yield return new WaitForSeconds(timeTillWakeUp);
-        m_WokenUp.Invoke();
-        value = false;
-        controller.enabled = true;
-        StartCoroutine(VignetteChanger(true, vignette.intensity.value, 0));
+        yield return null;
     }
 
     public IEnumerator VignetteChanger(bool wakingUp, float startingIntensity, float t)
@@ -40,14 +47,11 @@ public class PassedOutScript : MonoBehaviour
         while(t < 1)
         {
 
-            print("vignette running, t: " + t);
             float endIntensity = wakingUp ? 0 : 1;
-            print(endIntensity);
             t += Time.deltaTime / faintTime;
-
             vignette.intensity.value = Mathf.Lerp(startingIntensity, endIntensity, t);
-
             yield return null;
         }
+        if (!wakingUp) StartCoroutine(wakingupscript.WakeUpSequence(0, 0));
     }
 }

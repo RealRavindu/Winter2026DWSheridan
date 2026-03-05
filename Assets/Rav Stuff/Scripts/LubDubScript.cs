@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LubDubScript : MonoBehaviour
 {
@@ -35,6 +36,9 @@ public class LubDubScript : MonoBehaviour
     //external script refrences
     private PassedOutScript PassedOutScript;
 
+    [SerializeField] Slider bloodBar;
+    [SerializeField] Gradient barColor;
+
     private void Start()
     {
         PassedOutScript = GetComponent<PassedOutScript>();
@@ -49,6 +53,9 @@ public class LubDubScript : MonoBehaviour
         CheckBeats();
         SetIntervalValue();
         CalculateBeatPerTime();
+        Faint();
+        UpdateBloodBar();
+
     }
 
     /// <summary>
@@ -87,7 +94,7 @@ public class LubDubScript : MonoBehaviour
             heartRate = doubleBeatRatio / beatInterval;
         }
 
-        Faint();
+        //Faint();
     }
 
     /// <summary>
@@ -136,16 +143,37 @@ public class LubDubScript : MonoBehaviour
 
     private void Faint()
     {
-        if (heartRate > redlineLimit || heartRate < stallLimit)
+        if (faintTimer > 10) faintTimer = 10;
+
+        if (!PassedOutScript.value)
         {
-            faintTimer -= Time.deltaTime;
+            if (heartRate > redlineLimit || heartRate < stallLimit)
+            {
+                faintTimer -= Time.deltaTime;
+            }
+            else
+            {
+                faintTimer += Time.deltaTime;
+            }
         }
-        
-        if (faintTimer < 0)
+        else
+        {
+            faintTimer = 10;
+        }
+
+        if (faintTimer <= 0)
         {
             Debug.Log("Player has feinted");
-            faintTimer = 0;
+            faintTimer = 10;
             //Passout script here
+            PassedOutScript.PassOut();
         }
+    }
+
+    private void UpdateBloodBar()
+    {
+        bloodBar.value = heartRate / 110;
+        Image bar = bloodBar.transform.GetChild(1).GetChild(0).GetComponent<Image>();
+        bar.color = barColor.Evaluate((10 - faintTimer) / 10);
     }
 }

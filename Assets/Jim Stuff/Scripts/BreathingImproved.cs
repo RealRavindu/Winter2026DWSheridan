@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.UI;
 public class BreathingImproved : MonoBehaviour
 {
     [SerializeField] KeyCode pulseHeart;
@@ -19,7 +19,7 @@ public class BreathingImproved : MonoBehaviour
     public AnimationCurve breathScaleCurve;
 
    
-    private float oxygenCapacity; //amount of oxygen the player has
+    public float oxygenCapacity; //amount of oxygen the player has
     private float oxygenDecay;
     private float oxygenModifiedDecay;
     private float oxygenMaxCapacity;
@@ -30,8 +30,12 @@ public class BreathingImproved : MonoBehaviour
 
 
 
-    [SerializeField] float faintTime = 5;
+    [SerializeField] float faintTimer = 10;
+    [SerializeField] float faintThreshold = 40;
     private PassedOutScript PassedOutScript;
+
+    [SerializeField] Slider oxygenBar;
+    [SerializeField] Gradient barColor;
 
     private void Start()
     {
@@ -65,6 +69,8 @@ public class BreathingImproved : MonoBehaviour
             Debug.Log("Breathing Out!");
         }
         Idle();
+        Faint();
+        UpdateOxygenBar();
     }
 
     private void SetRates()
@@ -133,5 +139,41 @@ public class BreathingImproved : MonoBehaviour
         float modifiedBreath = breathScaleCurve.Evaluate(breathModifier);
         Debug.Log($"breathing modifier {modifiedBreath}");
         return modifiedBreath;
+    }
+
+    private void Faint()
+    {
+        if (faintTimer > 10) faintTimer = 10;
+        if (!PassedOutScript.value)
+        {
+            if (oxygenCapacity < faintThreshold)
+            {
+                faintTimer -= Time.deltaTime;
+            }
+            else
+            {
+                faintTimer += Time.deltaTime;
+            }
+        } else
+        {
+            faintTimer = 10;
+        }
+
+
+        if (faintTimer < 0)
+        {
+            Debug.Log("Player has feinted from lack of oxygen");
+            faintTimer = 10;
+            //Passout script here
+            PassedOutScript.PassOut();
+        }
+    }
+
+    private void UpdateOxygenBar()
+    {
+        oxygenBar.value = airCapacity / airMaxCapacity;
+
+        Image bar = oxygenBar.transform.GetChild(1).GetChild(0).GetComponent<Image>();
+        bar.color = barColor.Evaluate((10 - faintTimer) / 10);
     }
 }

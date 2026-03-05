@@ -48,7 +48,7 @@ public class BloodPumpingScript : MonoBehaviour
             {
                 string msg = (rate < 0.5f) ? "Passed out due to not pumping enough blood" : "Passed out due to heart attack (too much blood pump)";
                 Debug.Log(msg);
-                StartCoroutine(passedOut.passedOutTimer());
+                //StartCoroutine(passedOut.passedOutTimer());
             }
         }
 

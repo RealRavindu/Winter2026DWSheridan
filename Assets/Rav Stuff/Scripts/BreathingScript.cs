@@ -86,7 +86,7 @@ public class BreathingScript : MonoBehaviour
             if (passOutTimer > passOutThreshold)
             {
                 Debug.Log("Passed out due to holding breath");
-                StartCoroutine(passedOut.passedOutTimer());
+                //StartCoroutine(passedOut.passedOutTimer());
             }
         }
 
