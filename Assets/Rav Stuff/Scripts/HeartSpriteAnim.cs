@@ -6,6 +6,9 @@ public class HeartSpriteAnim : MonoBehaviour
     public float heartDecreaseRate, small, big;
     private Vector3 startingSize;
 
+
+    [SerializeField] LubDubScript heart;
+
     private void Start()
     {
         startingSize = transform.localScale;
@@ -28,6 +31,7 @@ public class HeartSpriteAnim : MonoBehaviour
         }
 
         DecreaseHeartSize();
+        HeartRateShake(heart.heartRate, 1);
     }
 
     void HeartIncreaseSmall()
@@ -53,5 +57,10 @@ public class HeartSpriteAnim : MonoBehaviour
             transform.localScale = heartSize;
         }
         
+    }
+
+    void HeartRateShake(float heartRate, float maxHeartRate)
+    {
+
     }
 }
