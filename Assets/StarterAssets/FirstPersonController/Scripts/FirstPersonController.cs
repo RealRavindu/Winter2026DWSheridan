@@ -11,9 +11,13 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM
 	[RequireComponent(typeof(PlayerInput))]
 #endif
+
 	public class FirstPersonController : MonoBehaviour
 	{
-		[Header("Player")]
+        // jump and move modifier script
+        private MoveModifier _moveModifier;
+
+        [Header("Player")]
 		[Tooltip("Move speed of the character in m/s")]
 		public float MoveSpeed = 4.0f;
 		[Tooltip("Sprint speed of the character in m/s")]
@@ -121,6 +125,9 @@ namespace StarterAssets
 			_jumpTimeoutDelta = JumpTimeout;
 			_fallTimeoutDelta = FallTimeout;
 
+			// assign script for modifier
+			_moveModifier = GetComponent<MoveModifier>();
+
 		}
 
 		private void Update()
@@ -211,7 +218,8 @@ namespace StarterAssets
 			}
 
 			// move the player
-			_controller.Move(inputDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+			//James - Use bool state to freeze direction and speed at moment of faint, same for vertVel
+			_controller.Move(inputDirection.normalized * (_moveModifier.GetMoveModified(_speed) * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
 		}
 
 		private void JumpAndGravity()
@@ -231,7 +239,8 @@ namespace StarterAssets
 				if (_input.jump && _jumpTimeoutDelta <= 0.0f)
 				{
 					// the square root of H * -2 * G = how much velocity needed to reach desired height
-					_verticalVelocity = Mathf.Sqrt(JumpHeight * ((bloodScript.heartRate/2) + lungscript.oxygenCapacity + 0.25f) * -2f * Gravity);
+					//James - Jump Height Scales with heart Rate make equation that sets min and max based on min and max heart rate. Lung capacity scales 0 to 1 on how much of that height is used
+					_verticalVelocity = Mathf.Sqrt( _moveModifier.GetJumpModified(JumpHeight) * -2f * Gravity);
 				}
 
 				// jump timeout
