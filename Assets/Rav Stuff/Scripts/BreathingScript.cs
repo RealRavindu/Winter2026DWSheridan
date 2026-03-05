@@ -31,6 +31,9 @@ public class BreathingScript : MonoBehaviour
 
     private void Update()
     {
+        //sets the currentBreath value to breath so currentBreath can be referenced in other scripts.
+        currentBreath = breath;
+
 
         //decreasing rate to simulate exhaling
         breath -= rateOfExhale * Time.deltaTime;
