@@ -28,6 +28,7 @@ namespace StarterAssets
 
 		private LubDubScript bloodScript;
 		private BreathingImproved lungscript;
+		private PassedOutScript passOutScript;
 
 		[Space(10)]
 		[Tooltip("The height the player can jump")]
@@ -107,6 +108,7 @@ namespace StarterAssets
 		{
 			bloodScript = GetComponent<LubDubScript>();
 			lungscript = GetComponent<BreathingImproved>();
+			passOutScript = GetComponent<PassedOutScript>();
 			_controller = GetComponent<CharacterController>();
 			_input = GetComponent<StarterAssetsInputs>();
 #if ENABLE_INPUT_SYSTEM
@@ -181,6 +183,7 @@ namespace StarterAssets
 			float speedOffset = 0.1f;
 			float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
 
+
 			// accelerate or decelerate to target speed
 			if (currentHorizontalSpeed < targetSpeed - speedOffset || currentHorizontalSpeed > targetSpeed + speedOffset)
 			{
@@ -196,8 +199,8 @@ namespace StarterAssets
 				_speed = targetSpeed;
 			}
 
-			// normalise input direction
-			Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
+            // normalise input direction
+            Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
 
 			// note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
 			// if there is a move input rotate player when the player is moving
