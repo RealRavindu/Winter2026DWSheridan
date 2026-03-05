@@ -8,11 +8,21 @@ public class WakingUpScript : MonoBehaviour
     //show lung breathing animation side by side
     //then passedOut = false and remove vignette slowly
     private PassedOutScript PassedOutScript;
-    public IEnumerator WakeUpSequence()
+    [SerializeField] float heartBeatRate, breatheHoldDuration;
+
+    private void Start()
     {
+        PassedOutScript = GetComponent<PassedOutScript>();
+        StartCoroutine(WakeUpSequence(0));
+    }
+    public IEnumerator WakeUpSequence(float t)
+    {
+        t += Time.deltaTime;
+
         while (PassedOutScript.value)
         {
             
+            yield return null;
         }
     }
 }
