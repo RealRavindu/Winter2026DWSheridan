@@ -375,10 +375,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7776b60e8fd13247acae50ec05da33d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HeartSpriteAnim
-  heart: {fileID: 0}
   heartDecreaseRate: 0.2
   small: 0.3
   big: 0.6
+  heart: {fileID: 135756641613574994}
 --- !u!4 &75432556 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8379900264220769560, guid: 09aade0ecefd01e4b8f7661acf64f5c2, type: 3}

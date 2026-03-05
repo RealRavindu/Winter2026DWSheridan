@@ -31,7 +31,7 @@ public class HeartSpriteAnim : MonoBehaviour
         }
 
         DecreaseHeartSize();
-        HeartRateShake(heart.heartRate, 1);
+        HeartRateShake(heart.heartRate, heart.redlineLimit);
     }
 
     void HeartIncreaseSmall()
@@ -56,11 +56,17 @@ public class HeartSpriteAnim : MonoBehaviour
             heartSize -= Vector2.one * heartDecreaseRate;
             transform.localScale = heartSize;
         }
-        
     }
 
     void HeartRateShake(float heartRate, float maxHeartRate)
     {
-
+        Debug.Log($"AAAAAAAL{maxHeartRate}, {heart.redlineLimit}, {heartRate}");
+        float frequency = heartRate / maxHeartRate;
+        print("freq AAAAAAAAAAAAAH: " + frequency);
+        Vector2 newPos = new Vector2(Mathf.Cos(Time.time * frequency), 0) + (Vector2)transform.position;
+        print("newpos AAAAAAAAAAAAAH: " + newPos);
+        print("math.cos no freq AAAAAAAAAAAAAH: " + Mathf.Cos(Time.time%1));
+        transform.position = newPos;
+        
     }
 }
