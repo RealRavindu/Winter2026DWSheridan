@@ -40,17 +40,20 @@ public class WakingUpScript : MonoBehaviour
 
         t += Time.deltaTime;
 
+        bool achievedHeartRate = false;
 
         while (PassedOutScript.value)
         {
             if (heartScript.heartRate > 18)
             {
                 heartProgress += Time.deltaTime;
+                Mathf.Clamp(heartProgress, 0, timeToMaintainHeartBeat);
 
-                if (heartProgress > timeToMaintainHeartBeat)
+                if (heartProgress > timeToMaintainHeartBeat && !achievedHeartRate)
                 {
                     LeanTween.move(heartIcons.gameObject, Camera.main.ViewportToScreenPoint(new Vector2(0.75f, 0.5f)), 0.25f);
                     LeanTween.alphaCanvas(lungIcons, 1, 0.5f);
+                    achievedHeartRate=true;
                 }
 
             }
