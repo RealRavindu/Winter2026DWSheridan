@@ -45,7 +45,7 @@ public class WakingUpScript : MonoBehaviour
                 LeanTween.alphaCanvas(lungIcons, 1, 0.5f);
                 achievedHeartRate = true;
             }
-            if (lungScript.oxygenCapacity > 150 && heartScript.heartRate > 18)
+            if (lungScript.oxygenCapacity > 80 && heartScript.heartRate > 18)
             {
                 PassedOutScript.value = false;
                 PassedOutScript.passingOutCR = null;

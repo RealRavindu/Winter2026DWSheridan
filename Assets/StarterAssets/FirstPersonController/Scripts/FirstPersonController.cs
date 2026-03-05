@@ -1,4 +1,5 @@
 ﻿//using UnityEditor.ShaderGraph.Internal;
+using Unity.VisualScripting;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -25,11 +26,8 @@ namespace StarterAssets
         [Header("New Camera Stuff")]
         public float CameraTurningSpeed;
 
-		[Header("Breathing Script Reference")]
-		public BreathingScript BreathingScript;
-		[Header("Blood Pumping script reference")]
-		public BloodPumpingScript BloodPumpingScript;
-
+		private LubDubScript bloodScript;
+		private BreathingImproved lungscript;
 
 		[Space(10)]
 		[Tooltip("The height the player can jump")]
@@ -107,6 +105,8 @@ namespace StarterAssets
 
 		private void Start()
 		{
+			bloodScript = GetComponent<LubDubScript>();
+			lungscript = GetComponent<BreathingImproved>();
 			_controller = GetComponent<CharacterController>();
 			_input = GetComponent<StarterAssetsInputs>();
 #if ENABLE_INPUT_SYSTEM
@@ -123,8 +123,6 @@ namespace StarterAssets
 
 		private void Update()
 		{
-            float currentBreath = BreathingScript.currentBreath;
-
             JumpAndGravity();
 			GroundedCheck();
 			Move();
@@ -230,7 +228,7 @@ namespace StarterAssets
 				if (_input.jump && _jumpTimeoutDelta <= 0.0f)
 				{
 					// the square root of H * -2 * G = how much velocity needed to reach desired height
-					_verticalVelocity = Mathf.Sqrt(JumpHeight * ((BloodPumpingScript.rate/2) + BreathingScript.breath + 0.25f) * -2f * Gravity);
+					_verticalVelocity = Mathf.Sqrt(JumpHeight * ((bloodScript.heartRate/2) + lungscript.oxygenCapacity + 0.25f) * -2f * Gravity);
 				}
 
 				// jump timeout

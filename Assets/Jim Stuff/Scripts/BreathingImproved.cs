@@ -44,13 +44,12 @@ public class BreathingImproved : MonoBehaviour
         {
             Debug.Log("Error, no LubDub script found!"); return;
         }
-        /*
+        
         PassedOutScript = GetComponent<PassedOutScript>();
         if (PassedOutScript == null)
         {
             Debug.Log("Error, no PassedOut script found!"); return;
         }
-        */
         SetRates();
     }
 
@@ -143,6 +142,7 @@ public class BreathingImproved : MonoBehaviour
 
     private void Faint()
     {
+        print("FAAAAAAAAAAAAAAAAAAAINT");
         if (faintTimer > 10) faintTimer = 10;
         if (!PassedOutScript.value)
         {
@@ -171,6 +171,7 @@ public class BreathingImproved : MonoBehaviour
 
     private void UpdateOxygenBar()
     {
+        print("AAAAAAAAAAAAAAAAAAA");
         oxygenBar.value = airCapacity / airMaxCapacity;
 
         Image bar = oxygenBar.transform.GetChild(1).GetChild(0).GetComponent<Image>();

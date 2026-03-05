@@ -13,6 +13,10 @@ public class BlinkingScript : MonoBehaviour
     public float blurModifier;
 
 
+    //key reminder signifiers
+    [SerializeField] CanvasGroup leftBlinkReminder, rightBlinkReminder;
+    [SerializeField] float timeToRemind;
+
     private void Start()
     {
         passedOutScript = GetComponent<PassedOutScript>();
@@ -20,6 +24,7 @@ public class BlinkingScript : MonoBehaviour
 
     private void Update()
     {
+        //setting blur amount which will then be input into the material variables
         leftBlurAmount += blurModifier * Time.deltaTime;
         rightBlurAmount += blurModifier * Time.deltaTime;
 
@@ -27,6 +32,7 @@ public class BlinkingScript : MonoBehaviour
         _leftBlurMat.SetFloat("_Blur", leftBlurAmount);
         _rightBlurMat.SetFloat("_Blur", rightBlurAmount);
 
+        //if not already passed out, check for blinking key presses
         if (!passedOutScript.value)
         {
             if (Input.GetKey(blinkLeftKey))
@@ -53,38 +59,47 @@ public class BlinkingScript : MonoBehaviour
             OpenRightEye();
         }
 
-
+        showKeyReminders(); //makes a key icon with the button for the appropriate blink appear if haven't blinked in a while
     }
 
     private void CloseLeftEye()
     {
-        //LeftTop.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(-200, 112.5f, 0));
-        //LeftTop.transform.localPosition = new Vector3(-testvar * Screen.currentResolution.width, 0.25f * Screen.currentResolution.height, 0);
-        //LeftBottom.transform.localPosition = new Vector3(-testvar * Screen.currentResolution.width, -0.25f * Screen.currentResolution.height, 0);
         LeftTop.gameObject.SetActive(true);
         LeftBottom.gameObject.SetActive(true);
         leftBlurAmount = 0;
+
+        //get rid of signifier
+        leftBlinkReminder.alpha = 0;
     }
     void CloseRightEye()
     {
-        //RightTop.transform.localPosition = new Vector3(testvar * Screen.currentResolution.width, 0.25f * Screen.currentResolution.height, 0);
-        //RightBottom.transform.localPosition = new Vector3(testvar * Screen.currentResolution.width, -0.25f * Screen.currentResolution.height, 0);
         RightTop.gameObject.SetActive(true);
         RightBottom.gameObject.SetActive(true);
         rightBlurAmount = 0;
+
+        //get rid of signifier
+        rightBlinkReminder.alpha = 0;
     }
     void OpenLeftEye()
     {
-        //LeftTop.transform.localPosition = new Vector3(-testvar * Screen.currentResolution.width, 1f * Screen.currentResolution.height, 0);
-        //LeftBottom.transform.localPosition = new Vector3(-testvar * Screen.currentResolution.width, -1f * Screen.currentResolution.height, 0);
         LeftTop.gameObject.SetActive(false);
         LeftBottom.gameObject.SetActive(false);
     }
     void OpenRightEye()
     {
-        //RightTop.transform.localPosition = new Vector3(testvar * Screen.currentResolution.width, 1f * Screen.currentResolution.height, 0);
-        //RightBottom.transform.localPosition = new Vector3(testvar * Screen.currentResolution.width, -1f * Screen.currentResolution.height, 0);
         RightTop.gameObject.SetActive(false);
         RightBottom.gameObject.SetActive(false);
+    }
+
+    void showKeyReminders()
+    {
+        if(leftBlurAmount > timeToRemind)
+        {
+            LeanTween.alphaCanvas(leftBlinkReminder, 1, 2);
+        }
+        if (rightBlurAmount > timeToRemind)
+        {
+            LeanTween.alphaCanvas(rightBlinkReminder, 1, 2);
+        }
     }
 }
