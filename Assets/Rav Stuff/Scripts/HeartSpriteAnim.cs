@@ -1,11 +1,11 @@
 using UnityEngine;
-
+using System.Collections;
 public class HeartSpriteAnim : MonoBehaviour
 {
     private bool secondBeat = false;
-    public float heartDecreaseRate, small, big;
+    public float heartDecreaseRate, small, big, shakeAmplitude;
     private Vector3 startingSize;
-
+    private Coroutine heartShakeCR;
 
     [SerializeField] LubDubScript heart;
 
@@ -31,7 +31,7 @@ public class HeartSpriteAnim : MonoBehaviour
         }
 
         DecreaseHeartSize();
-        HeartRateShake(heart.heartRate, heart.redlineLimit);
+        if(heartShakeCR == null) heartShakeCR = StartCoroutine(HeartRateShake(heart.heartRate, heart.redlineLimit, transform.position));
     }
 
     void HeartIncreaseSmall()
@@ -58,15 +58,14 @@ public class HeartSpriteAnim : MonoBehaviour
         }
     }
 
-    void HeartRateShake(float heartRate, float maxHeartRate)
+    private IEnumerator HeartRateShake(float heartRate, float maxHeartRate, Vector2 startPos)
     {
-        Debug.Log($"AAAAAAAL{maxHeartRate}, {heart.redlineLimit}, {heartRate}");
-        float frequency = heartRate / maxHeartRate;
-        print("freq AAAAAAAAAAAAAH: " + frequency);
-        Vector2 newPos = new Vector2(Mathf.Cos(Time.time * frequency), 0) + (Vector2)transform.position;
-        print("newpos AAAAAAAAAAAAAH: " + newPos);
-        print("math.cos no freq AAAAAAAAAAAAAH: " + Mathf.Cos(Time.time%1));
-        transform.position = newPos;
-        
+        while (true)
+        {
+            float frequency = heartRate / maxHeartRate;
+            Vector2 newPos = new Vector2(Mathf.Cos(Time.time % 1 ), 0) * shakeAmplitude + startPos;
+            transform.position = newPos;
+            yield return null;
+        }
     }
 }

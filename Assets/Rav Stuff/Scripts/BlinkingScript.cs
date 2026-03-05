@@ -25,10 +25,12 @@ public class BlinkingScript : MonoBehaviour
     private void Update()
     {
         //setting blur amount which will then be input into the material variables
-        leftBlurAmount += blurModifier * Time.deltaTime;
-        rightBlurAmount += blurModifier * Time.deltaTime;
-
-
+        if (!passedOutScript.value)
+        {
+            leftBlurAmount += blurModifier * Time.deltaTime;
+            rightBlurAmount += blurModifier * Time.deltaTime;
+        }
+        
         _leftBlurMat.SetFloat("_Blur", leftBlurAmount);
         _rightBlurMat.SetFloat("_Blur", rightBlurAmount);
 
@@ -93,6 +95,7 @@ public class BlinkingScript : MonoBehaviour
 
     void showKeyReminders()
     {
+
         if(leftBlurAmount > timeToRemind)
         {
             LeanTween.alphaCanvas(leftBlinkReminder, 1, 2);
