@@ -60,12 +60,12 @@ public class BreathingImproved : MonoBehaviour
         if (Input.GetKey(pulseHeart))
         {
             BreathIn();
-            Debug.Log("Breathing in!");
+            //Debug.Log("Breathing in!");
         }
         else
         {
             BreathOut();
-            Debug.Log("Breathing Out!");
+            //Debug.Log("Breathing Out!");
         }
         Idle();
         Faint();
@@ -87,7 +87,7 @@ public class BreathingImproved : MonoBehaviour
     private void UpdateRates()
     {
         heartRate = LubDubScript.heartRate;
-        Debug.Log($"Modified airFlow {ModifyFlowValue()}, decay {ModifyDecayValue()}");
+        //Debug.Log($"Modified airFlow {ModifyFlowValue()}, decay {ModifyDecayValue()}");
         airFlowModified =  airFlow * ModifyFlowValue();
         oxygenModifiedDecay = oxygenDecay * ModifyDecayValue();
     }
@@ -106,7 +106,7 @@ public class BreathingImproved : MonoBehaviour
         if (airCapacity < airMaxCapacity)
         {
             oxygenCapacity += (airFlowModified + (decayOffset * oxygenDecay)) * ModifyBreathValue() * Time.deltaTime;
-            Debug.Log("Increasing oxygen!");
+            //Debug.Log("Increasing oxygen!");
         }
     }
 
@@ -119,7 +119,7 @@ public class BreathingImproved : MonoBehaviour
     private float ModifyDecayValue()
     {
         float heartRateModifier = Mathf.InverseLerp(heartStall, heartRedline, heartRate);
-        Debug.Log($"hear rate modifier {heartRateModifier}");
+        //Debug.Log($"hear rate modifier {heartRateModifier}");
         float modifiedDecay = oxygenDecayCurve.Evaluate(heartRateModifier);
         return modifiedDecay;
     }
@@ -132,17 +132,17 @@ public class BreathingImproved : MonoBehaviour
     private float ModifyBreathValue()
     {
         float timeToMaxLungCapacity = airMaxCapacity / airFlowModified;
-        Debug.Log($"breathing time {timeToMaxLungCapacity}");
+       // Debug.Log($"breathing time {timeToMaxLungCapacity}");
         breathTimer += Time.deltaTime;
         float breathModifier = Mathf.InverseLerp(0, timeToMaxLungCapacity, breathTimer);
         float modifiedBreath = breathScaleCurve.Evaluate(breathModifier);
-        Debug.Log($"breathing modifier {modifiedBreath}");
+       // Debug.Log($"breathing modifier {modifiedBreath}");
         return modifiedBreath;
     }
 
     private void Faint()
     {
-        print("FAAAAAAAAAAAAAAAAAAAINT");
+        //print("FAAAAAAAAAAAAAAAAAAAINT");
         if (faintTimer > 10) faintTimer = 10;
         if (!PassedOutScript.value)
         {
@@ -162,7 +162,7 @@ public class BreathingImproved : MonoBehaviour
 
         if (faintTimer < 0)
         {
-            Debug.Log("Player has feinted from lack of oxygen");
+           // Debug.Log("Player has feinted from lack of oxygen");
             faintTimer = 10;
             //Passout script here
             PassedOutScript.PassOut();
@@ -171,7 +171,7 @@ public class BreathingImproved : MonoBehaviour
 
     private void UpdateOxygenBar()
     {
-        print("AAAAAAAAAAAAAAAAAAA");
+       // print("AAAAAAAAAAAAAAAAAAA");
         oxygenBar.value = airCapacity / airMaxCapacity;
 
         Image bar = oxygenBar.transform.GetChild(1).GetChild(0).GetComponent<Image>();

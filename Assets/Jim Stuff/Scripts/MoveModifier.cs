@@ -65,7 +65,7 @@ public class MoveModifier : MonoBehaviour
         float jumpTemp = Mathf.Lerp(minJumpHeight, maxJumpHeight, jumpRatio);
         float lungModifier = Mathf.InverseLerp(0, maxAirCapacity, airCapacity);
         jumpModified = jumpTemp * lungModifier;
-        Debug.Log($"New jump height {jumpModified}, lung mod {lungModifier}");
+       // Debug.Log($"New jump height {jumpModified}, lung mod {lungModifier}");
         return jumpModified;
     }
 
@@ -74,7 +74,7 @@ public class MoveModifier : MonoBehaviour
         heartRate = lubDubScript.heartRate;
         float moveRatio = Mathf.InverseLerp(minHeartRate, maxHeartRate, heartRate);
         moveModified = Mathf.Lerp(minMoveSpeed, maxMoveSpeed, moveRatio);
-        Debug.Log($"New move speed {moveModified}");
+        //Debug.Log($"New move speed {moveModified}");
         return moveModified;
     }
 
