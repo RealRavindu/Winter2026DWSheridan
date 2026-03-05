@@ -36,7 +36,6 @@ public class PassedOutScript : MonoBehaviour
     //counts up till 'timeTillWakeUp' and then sets isPassedOut to true. Need to implement any animation coding here.
     public IEnumerator passingOut()
     {
-        controller.enabled = false;
         value = true;
         StartCoroutine(VignetteChanger(false, vignette.intensity.value, 0));
         yield return null;

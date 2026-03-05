@@ -84,6 +84,11 @@ public class LubDubScript : MonoBehaviour
     /// </summary>
     private void CalculateBeatPerTime()
     {
+        if (beatInterval == 0)
+        {
+            heartRate = 0;
+            return;
+        }
         int doubleBeatRatio = ratio / 2;
         if (!doubleBeat)
         {
@@ -138,7 +143,7 @@ public class LubDubScript : MonoBehaviour
         {
             inputCount = 0;
         }
-        Debug.Log($"beats = {inputCount}");
+        //Debug.Log($"beats = {inputCount}");
     }
 
     private void Faint()
@@ -163,7 +168,7 @@ public class LubDubScript : MonoBehaviour
 
         if (faintTimer <= 0)
         {
-            Debug.Log("Player has feinted");
+            //Debug.Log("Player has feinted");
             faintTimer = 10;
             //Passout script here
             PassedOutScript.PassOut();
