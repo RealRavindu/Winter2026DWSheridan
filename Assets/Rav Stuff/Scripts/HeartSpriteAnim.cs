@@ -63,7 +63,7 @@ public class HeartSpriteAnim : MonoBehaviour
         while (true)
         {
             float frequency = heartRate / maxHeartRate;
-            Vector2 newPos = new Vector2(Mathf.Cos(Time.time % 1 ), 0) * shakeAmplitude + startPos;
+            Vector2 newPos = new Vector2(Mathf.Cos(Time.time % Mathf.PI ), 0) * shakeAmplitude + startPos;
             transform.position = newPos;
             yield return null;
         }

@@ -378,6 +378,7 @@ MonoBehaviour:
   heartDecreaseRate: 0.2
   small: 0.3
   big: 0.6
+  shakeAmplitude: 0
   heart: {fileID: 135756641613574994}
 --- !u!4 &75432556 stripped
 Transform:
@@ -10791,10 +10792,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb6fde08b0fc63e488caf803fb95f4da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MoveModifier
-  maxJumpHeight: 0.57
-  minJumpHeight: 0.55
-  maxMoveSpeed: 0.66
-  minMoveSpeed: -0.08
+  maxJumpHeight: 8
+  minJumpHeight: 1
+  maxMoveSpeed: 7
+  minMoveSpeed: 0.5
 --- !u!1 &2114283753834967212
 GameObject:
   m_ObjectHideFlags: 0
