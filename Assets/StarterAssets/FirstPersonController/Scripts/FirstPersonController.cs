@@ -21,7 +21,7 @@ namespace StarterAssets
 		private Vector3 lastInputDirection;
 		private float storedHorizontalVelocity;
 		private float storedVerticalVelocity;
-		public float passedOutDecceleration;
+		public float passedOutDeccel = 0.5f;
 
         [Header("Player")]
 		[Tooltip("Move speed of the character in m/s")]
@@ -226,40 +226,39 @@ namespace StarterAssets
                     inputDirection = transform.right * _input.move.x + transform.forward * _input.move.y;
                 }
 
-				//set stored speed value and direction input
-                storedHorizontalVelocity = _speed;
-                lastInputDirection = inputDirection;
+				if (Grounded)
+				{
+					//set stored speed value and direction input
+					storedHorizontalVelocity = _speed;
+					lastInputDirection = inputDirection;
+				}
+
+                // move the player
+                _controller.Move(lastInputDirection.normalized * (_moveModifier.GetMoveModified(storedHorizontalVelocity) * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
             }
 			else
 			{
-				if (storedHorizontalVelocity < 0.05)
-				{
-					Debug.Log($"{storedHorizontalVelocity}, {inputMagnitude}");
-					// set target speed to 0 to deccelerate
-					targetSpeed = 0f;
 
-					// creates curved result rather than a linear one giving a more organic speed change
-					// note T in Lerp is clamped, so we don't need to clamp our speed
-					_speed = Mathf.Lerp(storedHorizontalVelocity, targetSpeed * inputMagnitude, Time.deltaTime * passedOutDecceleration);
+				// set target speed to 0 to deccelerate
+				targetSpeed = 0f;
 
-					// round speed to 3 decimal places
-					_speed = Mathf.Round(_speed * 1000f) / 1000f;
+				// creates curved result rather than a linear one giving a more organic speed change
+				// note T in Lerp is clamped, so we don't need to clamp our speed
+				_speed = Mathf.Lerp(storedHorizontalVelocity, targetSpeed * inputMagnitude, Time.deltaTime * passedOutDeccel);
 
-					// update stored speed value
-					storedHorizontalVelocity = _speed;
-				}
-				else
-				{
-					storedHorizontalVelocity = 0;
-				}
+				// round speed to 3 decimal places
+				_speed = Mathf.Round(_speed * 1000f) / 1000f;
+                Debug.Log(_speed);
+
+                // update stored speed value
+                storedHorizontalVelocity = _speed;
+
+				
             }
 
-            
-			
             // move the player
-            //James - Use bool state to freeze direction and speed at moment of faint, same for vertVel
             _controller.Move(lastInputDirection.normalized * (_moveModifier.GetMoveModified(storedHorizontalVelocity) * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
-		}
+        }
 
 		private void JumpAndGravity()
 		{

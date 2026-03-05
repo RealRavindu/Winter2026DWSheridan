@@ -72,10 +72,17 @@ public class MoveModifier : MonoBehaviour
     public float GetMoveModified(float moveModified)
     {
         heartRate = lubDubScript.heartRate;
-        float moveRatio = Mathf.InverseLerp(minHeartRate, maxHeartRate, heartRate);
-        moveModified = Mathf.Lerp(minMoveSpeed, maxMoveSpeed, moveRatio);
-        //Debug.Log($"New move speed {moveModified}");
-        return moveModified;
+        if (moveModified > 0.1)
+        {
+            float moveRatio = Mathf.InverseLerp(minHeartRate, maxHeartRate, heartRate);
+            moveModified = Mathf.Lerp(minMoveSpeed, maxMoveSpeed, moveRatio);
+            //Debug.Log($"New move speed {moveModified}");
+            return moveModified;
+        }
+        else
+        {
+            return moveModified = 0;
+        }
     }
 
 
