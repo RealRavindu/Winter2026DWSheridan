@@ -1,3 +1,4 @@
+using NUnit.Framework.Internal;
 using StarterAssets;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,6 +9,12 @@ public class BlinkingScript : MonoBehaviour
     public KeyCode blinkLeftKey, blinkRightKey;
     private PassedOutScript passedOutScript;
     public Material _leftBlurMat, _rightBlurMat;
+    private float leftBlurAmount, rightBlurAmount;
+    public float blurModifier;
+    [Range(0,1)] public float testvar;
+
+    public Canvas canvas;
+
     private void Start()
     {
         passedOutScript = GetComponent<PassedOutScript>();
@@ -15,6 +22,15 @@ public class BlinkingScript : MonoBehaviour
 
     private void Update()
     {
+        print(Screen.currentResolution.width);
+        print(Screen.width);
+        leftBlurAmount += blurModifier * Time.deltaTime;
+        rightBlurAmount += blurModifier * Time.deltaTime;
+
+
+        _leftBlurMat.SetFloat("_Blur", leftBlurAmount);
+        _rightBlurMat.SetFloat("_Blur", rightBlurAmount);
+
         if (!passedOutScript.value)
         {
             if (Input.GetKey(blinkLeftKey))
@@ -47,22 +63,24 @@ public class BlinkingScript : MonoBehaviour
     private void CloseLeftEye()
     {
         //LeftTop.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(-200, 112.5f, 0));
-        LeftTop.transform.position = Camera.main.ViewportToScreenPoint(new Vector3(0.25f, 0.75f, 0));
-        LeftBottom.transform.position = Camera.main.ViewportToScreenPoint(new Vector3(0.25f, 0.25f, 0));
+        LeftTop.transform.localPosition = new Vector3(-testvar * Screen.currentResolution.width, 0.25f * Screen.currentResolution.height, 0);
+        LeftBottom.transform.localPosition = new Vector3(-testvar * Screen.currentResolution.width, -0.25f * Screen.currentResolution.height, 0);
+        leftBlurAmount = 0;
     }
     void CloseRightEye()
     {
-        RightTop.transform.position = Camera.main.ViewportToScreenPoint(new Vector3(0.75f, 0.75f, 0));
-        RightBottom.transform.position = Camera.main.ViewportToScreenPoint(new Vector3(0.75f, 0.25f, 0)); ;
+        RightTop.transform.localPosition = new Vector3(testvar * Screen.currentResolution.width, 0.25f * Screen.currentResolution.height, 0);
+        RightBottom.transform.localPosition = new Vector3(testvar * Screen.currentResolution.width, -0.25f * Screen.currentResolution.height, 0);
+        rightBlurAmount = 0;
     }
     void OpenLeftEye()
     {
-        LeftTop.transform.position = Camera.main.ViewportToScreenPoint(new Vector3(0.25f, 2, 0));
-        LeftBottom.transform.position = Camera.main.ViewportToScreenPoint(new Vector3(0.25f, 2, 0));
+        LeftTop.transform.localPosition = new Vector3(-testvar * Screen.currentResolution.width, 1f * Screen.currentResolution.height, 0);
+        LeftBottom.transform.localPosition = new Vector3(-testvar * Screen.currentResolution.width, -1f * Screen.currentResolution.height, 0);
     }
     void OpenRightEye()
     {
-        RightTop.transform.position = Camera.main.ViewportToScreenPoint(new Vector3(0.75f, 2, 0));
-        RightBottom.transform.position = Camera.main.ViewportToScreenPoint(new Vector3(0.75f, 2, 0));
+        RightTop.transform.localPosition = new Vector3(testvar * Screen.currentResolution.width, 1f * Screen.currentResolution.height, 0);
+        RightBottom.transform.localPosition = new Vector3(testvar * Screen.currentResolution.width, -1f * Screen.currentResolution.height, 0);
     }
 }
