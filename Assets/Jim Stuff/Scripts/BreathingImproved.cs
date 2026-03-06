@@ -36,6 +36,7 @@ public class BreathingImproved : MonoBehaviour
 
     [SerializeField] Slider oxygenBar;
     [SerializeField] Gradient barColor;
+    private Vector3 oxygenBarScaleStored;
 
     private void Start()
     {
@@ -51,6 +52,8 @@ public class BreathingImproved : MonoBehaviour
             Debug.Log("Error, no PassedOut script found!"); return;
         }
         SetRates();
+
+        oxygenBarScaleStored = oxygenBar.transform.localScale;
     }
 
     private void Update()
@@ -175,6 +178,15 @@ public class BreathingImproved : MonoBehaviour
         oxygenBar.value = airCapacity / airMaxCapacity;
 
         Image bar = oxygenBar.transform.GetChild(1).GetChild(0).GetComponent<Image>();
-        bar.color = barColor.Evaluate((10 - faintTimer) / 10);
+        bar.color = barColor.Evaluate((oxygenMaxCapacity - oxygenCapacity) / oxygenMaxCapacity);
+
+        Image lung = oxygenBar.transform.GetChild(0).GetComponent<Image>();
+        lung.color = barColor.Evaluate((10 - faintTimer) / 10);
+
+        float scalePercent = Mathf.InverseLerp(0, airMaxCapacity, airCapacity);
+        Vector3 scaleVector = Vector3.zero;
+        scaleVector.x = Mathf.Lerp(oxygenBarScaleStored.x, (oxygenBarScaleStored.x * 1.2f), scalePercent);
+        scaleVector.y = Mathf.Lerp(oxygenBarScaleStored.y, (oxygenBarScaleStored.y * 1.2f), scalePercent);
+        oxygenBar.transform.localScale = scaleVector;
     }
 }
