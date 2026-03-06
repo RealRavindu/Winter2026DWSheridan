@@ -13,7 +13,8 @@ public class WakingUpScript : MonoBehaviour
     private BreathingImproved lungScript;
     [SerializeField] float timeToMaintainHeartBeat;
     [SerializeField] Slider heartProgressBar, lungProgressBar;
-    public CanvasGroup heartIcons, lungIcons, sliderIcons;
+    public CanvasGroup heartIcons, lungIcons, sliderIcons, vitalsIcons;
+
 
     private void Start()
     {
@@ -34,6 +35,7 @@ public class WakingUpScript : MonoBehaviour
         float heartProgress = 0;
         heartIcons.transform.position = Camera.main.ViewportToScreenPoint(new Vector2(0.5f + 0.25f * (!firstTime ? 1 : 0), 0.5f));
         //fade key and prog bar into view
+        LeanTween.alphaCanvas(vitalsIcons, 1, 0.5f);
         LeanTween.alphaCanvas(heartIcons, 1, 0.5f);
         LeanTween.alphaCanvas(lungIcons, firstTime ? 0 : 1, 0.5f);
         LeanTween.alphaCanvas(sliderIcons, 1, 0.5f);
