@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using UnityEditor.ShaderKeywordFilter;
 public class HeartSpriteAnim : MonoBehaviour
 {
     private bool secondBeat = false;
