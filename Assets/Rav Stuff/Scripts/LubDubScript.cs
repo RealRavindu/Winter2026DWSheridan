@@ -36,8 +36,8 @@ public class LubDubScript : MonoBehaviour
     //external script refrences
     private PassedOutScript PassedOutScript;
 
-    [SerializeField] Slider bloodBar;
-    [SerializeField] Gradient barColor;
+    [SerializeField] Image heartImage;
+    [SerializeField] Gradient heatingColor, faintingColor;
 
     private void Start()
     {
@@ -173,12 +173,15 @@ public class LubDubScript : MonoBehaviour
             //Passout script here
             PassedOutScript.PassOut();
         }
+        print("end of faint");
     }
 
     private void UpdateBloodBar()
     {
-        bloodBar.value = heartRate / 110;
-        Image bar = bloodBar.transform.GetChild(1).GetChild(0).GetComponent<Image>();
-        bar.color = barColor.Evaluate((10 - faintTimer) / 10);
+        print("EVALUATE HEART RATE OVER REDLINE:" + heartRate / redlineLimit);
+        print("EVALUATE FAINT:" + (10 - faintTimer) / 10);
+        heartImage.color = heatingColor.Evaluate(heartRate/redlineLimit);
+        if(faintTimer < 10) heartImage.color = faintingColor.Evaluate((10-faintTimer)/10);
+        
     }
 }

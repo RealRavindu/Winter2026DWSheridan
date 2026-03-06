@@ -19,15 +19,13 @@ public class HeartSpriteAnim : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            if (!secondBeat)
+            if (heart.input == 0)
             {
-                secondBeat = true;
                 HeartIncreaseSmall();
 
             } else
             {
                 HeartIncreaseBig();
-                secondBeat = false;
             }
 
         }
