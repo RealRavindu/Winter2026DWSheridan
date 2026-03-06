@@ -21,7 +21,7 @@ public class LubDubScript : MonoBehaviour
 
     //stores time between inputs
     private float beatInterval; // value used in heart rate calculation
-    private float previousInterval; // interval between first and second double beat
+    public float previousInterval; // interval between first and second double beat
     private float currentInterval; // interval between second double beat and current time
     
     //stores time of input
