@@ -11,9 +11,9 @@ public class WakingUpScript : MonoBehaviour
     private PassedOutScript PassedOutScript;
     private LubDubScript heartScript;
     private BreathingImproved lungScript;
-    [SerializeField] float heartBeatRate, breatheHoldDuration;
-
-    public CanvasGroup heartIcons, lungIcons;
+    [SerializeField] float timeToMaintainHeartBeat;
+    [SerializeField] Slider heartProgressBar, lungProgressBar;
+    public CanvasGroup heartIcons, lungIcons, sliderIcons;
 
     private void Start()
     {
@@ -26,34 +26,62 @@ public class WakingUpScript : MonoBehaviour
     public IEnumerator FirstStart()
     {
         yield return new WaitForSeconds(3);
-        StartCoroutine(WakeUpSequence(0, 0));
+        StartCoroutine(WakeUpSequence(true));
     }
-    public IEnumerator WakeUpSequence(float t, float alpha)
+    public IEnumerator WakeUpSequence(bool firstTime)
     {
-        heartIcons.transform.position = Camera.main.ViewportToScreenPoint(new Vector2(0.5f, 0.5f));
-        //fade key into view
+        float t = 0;
+        float heartProgress = 0;
+        heartIcons.transform.position = Camera.main.ViewportToScreenPoint(new Vector2(0.5f + 0.25f * (!firstTime ? 1 : 0), 0.5f));
+        //fade key and prog bar into view
         LeanTween.alphaCanvas(heartIcons, 1, 0.5f);
+        LeanTween.alphaCanvas(lungIcons, firstTime ? 0 : 1, 0.5f);
+        LeanTween.alphaCanvas(sliderIcons, 1, 0.5f);
 
         t += Time.deltaTime;
 
         bool achievedHeartRate = false;
+
         while (PassedOutScript.value)
         {
-            if(heartScript.heartRate > 18 && !achievedHeartRate)
+            if (heartScript.heartRate > 18)
             {
-                LeanTween.move(heartIcons.gameObject, Camera.main.ViewportToScreenPoint(new Vector2(0.75f, 0.5f)), 0.25f);
-                LeanTween.alphaCanvas(lungIcons, 1, 0.5f);
-                achievedHeartRate = true;
+                heartProgress += Time.deltaTime;
+                Mathf.Clamp(heartProgress, 0, timeToMaintainHeartBeat);
+
+                if (heartProgress > timeToMaintainHeartBeat && !achievedHeartRate)
+                {
+                    LeanTween.move(heartIcons.gameObject, Camera.main.ViewportToScreenPoint(new Vector2(0.75f, 0.5f)), 0.25f);
+                    LeanTween.alphaCanvas(lungIcons, 1, 0.5f);
+                    achievedHeartRate=true;
+                }
+
             }
-            if (lungScript.oxygenCapacity > 80 && heartScript.heartRate > 18)
+            else
             {
-                PassedOutScript.value = false;
-                PassedOutScript.passingOutCR = null;
-                LeanTween.alphaCanvas(heartIcons, 0, 0.35f);
-                LeanTween.alphaCanvas(lungIcons, 0, 0.35f);
-                StartCoroutine(PassedOutScript.VignetteChanger(true, 1, 0));
+                heartProgress -= Time.deltaTime;
             }
+
+            heartProgressBar.value = heartProgress / timeToMaintainHeartBeat;
+            lungProgressBar.value = lungScript.oxygenCapacity / 80;
+
+            if (lungScript.oxygenCapacity > 80)
+            {
+                SucceedWakingUp();
+            }
+
             yield return null;
         }
+
+    }
+
+    void SucceedWakingUp()
+    {
+        PassedOutScript.value = false;
+        PassedOutScript.passingOutCR = null;
+        LeanTween.alphaCanvas(heartIcons, 0, 0.35f);
+        LeanTween.alphaCanvas(lungIcons, 0, 0.35f);
+        LeanTween.alphaCanvas(sliderIcons, 0, 0.35f);
+        StartCoroutine(PassedOutScript.VignetteChanger(true, 1, 0));
     }
 }
