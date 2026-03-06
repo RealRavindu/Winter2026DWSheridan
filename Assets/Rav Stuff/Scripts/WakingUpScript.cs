@@ -11,6 +11,7 @@ public class WakingUpScript : MonoBehaviour
     private PassedOutScript PassedOutScript;
     private LubDubScript heartScript;
     private BreathingImproved lungScript;
+    private MovementTutorial moveTut;
     [SerializeField] float timeToMaintainHeartBeat;
     [SerializeField] Slider heartProgressBar, lungProgressBar;
     public CanvasGroup heartIcons, lungIcons, sliderIcons, vitalsIcons;
@@ -21,6 +22,7 @@ public class WakingUpScript : MonoBehaviour
         PassedOutScript = GetComponent<PassedOutScript>();
         heartScript = GetComponent<LubDubScript>();
         lungScript = GetComponent<BreathingImproved>();
+        moveTut = GetComponent<MovementTutorial>();
         StartCoroutine(FirstStart());
     }
 
@@ -46,13 +48,15 @@ public class WakingUpScript : MonoBehaviour
         t += Time.deltaTime;
 
         bool achievedHeartRate = false;
+        bool enabledVitalsIcons = !firstTime;
+        print("WHAT I SOGIGN ON: " + enabledVitalsIcons);
 
         while (PassedOutScript.value)
         {
-            if (Input.GetKeyDown(KeyCode.Return) && firstTime)
+            if (Input.GetKeyDown(KeyCode.Return) && !enabledVitalsIcons)
             {
                 LeanTween.alphaCanvas(vitalsIcons, 1, 0.5f);
-                firstTime = false;
+                enabledVitalsIcons = true;
             }
             if (heartScript.heartRate > 18)
             {
@@ -77,7 +81,7 @@ public class WakingUpScript : MonoBehaviour
 
             if (lungScript.oxygenCapacity > 80)
             {
-                SucceedWakingUp();
+                SucceedWakingUp(firstTime);
             }
 
             yield return null;
@@ -85,13 +89,15 @@ public class WakingUpScript : MonoBehaviour
 
     }
 
-    void SucceedWakingUp()
+    void SucceedWakingUp(bool firstTime)
     {
         PassedOutScript.value = false;
         PassedOutScript.passingOutCR = null;
         LeanTween.alphaCanvas(heartIcons, 0, 0.35f);
         LeanTween.alphaCanvas(lungIcons, 0, 0.35f);
         LeanTween.alphaCanvas(sliderIcons, 0, 0.35f);
+
+        if (firstTime) StartCoroutine(moveTut.MovementTutorialCR());
         StartCoroutine(PassedOutScript.VignetteChanger(true, 1, 0));
     }
 }
