@@ -26,7 +26,7 @@ public class WakingUpScript : MonoBehaviour
 
     public IEnumerator FirstStart()
     {
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(1);
         StartCoroutine(WakeUpSequence(true));
     }
     public IEnumerator WakeUpSequence(bool firstTime)
@@ -35,7 +35,10 @@ public class WakingUpScript : MonoBehaviour
         float heartProgress = 0;
         heartIcons.transform.position = Camera.main.ViewportToScreenPoint(new Vector2(0.5f + 0.25f * (!firstTime ? 1 : 0), 0.5f));
         //fade key and prog bar into view
-        LeanTween.alphaCanvas(vitalsIcons, 1, 0.5f);
+        if(!firstTime )
+        {
+            LeanTween.alphaCanvas(vitalsIcons, 1, 0.5f);
+        }
         LeanTween.alphaCanvas(heartIcons, 1, 0.5f);
         LeanTween.alphaCanvas(lungIcons, firstTime ? 0 : 1, 0.5f);
         LeanTween.alphaCanvas(sliderIcons, 1, 0.5f);
@@ -46,6 +49,11 @@ public class WakingUpScript : MonoBehaviour
 
         while (PassedOutScript.value)
         {
+            if (Input.GetKeyDown(KeyCode.Return) && firstTime)
+            {
+                LeanTween.alphaCanvas(vitalsIcons, 1, 0.5f);
+                firstTime = false;
+            }
             if (heartScript.heartRate > 18)
             {
                 heartProgress += Time.deltaTime;
@@ -61,7 +69,7 @@ public class WakingUpScript : MonoBehaviour
             }
             else
             {
-                heartProgress -= Time.deltaTime;
+                heartProgress -= Time.deltaTime/3;
             }
 
             heartProgressBar.value = heartProgress / timeToMaintainHeartBeat;

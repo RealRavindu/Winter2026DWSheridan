@@ -11,7 +11,7 @@ public class BlinkingScript : MonoBehaviour
     public Material _leftBlurMat, _rightBlurMat;
     private float leftBlurAmount, rightBlurAmount;
     public float blurModifier;
-    private bool showingKeys;
+    private bool showingLeftKey, showingRightKey;
 
     //key reminder signifiers
     [SerializeField] CanvasGroup leftBlinkReminder, rightBlinkReminder;
@@ -72,7 +72,7 @@ public class BlinkingScript : MonoBehaviour
 
         //get rid of signifier
         leftBlinkReminder.alpha = 0;
-        showingKeys = false;
+        showingLeftKey = false;
     }
     void CloseRightEye()
     {
@@ -82,7 +82,7 @@ public class BlinkingScript : MonoBehaviour
 
         //get rid of signifier
         rightBlinkReminder.alpha = 0;
-        showingKeys = false;
+        showingRightKey = false;
     }
     void OpenLeftEye()
     {
@@ -98,15 +98,15 @@ public class BlinkingScript : MonoBehaviour
     void showKeyReminders()
     {
         
-        if(leftBlurAmount > timeToRemind && !showingKeys)
+        if(leftBlurAmount > timeToRemind && !showingLeftKey)
         {
             LeanTween.alphaCanvas(leftBlinkReminder, 1, 2);
-            showingKeys = true;
+            showingLeftKey = true;
         }
-        if (rightBlurAmount > timeToRemind && !showingKeys)
+        if (rightBlurAmount > timeToRemind && !showingRightKey)
         {
             LeanTween.alphaCanvas(rightBlinkReminder, 1, 2);
-            showingKeys = true;
+            showingRightKey = true;
         }
     }
 }
