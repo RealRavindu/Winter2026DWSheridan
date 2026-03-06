@@ -11,9 +11,19 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM
 	[RequireComponent(typeof(PlayerInput))]
 #endif
+
 	public class FirstPersonController : MonoBehaviour
 	{
-		[Header("Player")]
+        // jump and move modifier script
+        private MoveModifier _moveModifier;
+
+		// movement lock when passed out variables
+		private Vector3 lastInputDirection;
+		private float storedHorizontalVelocity;
+		private float storedVerticalVelocity;
+		public float passedOutDeccel = 0.5f;
+
+        [Header("Player")]
 		[Tooltip("Move speed of the character in m/s")]
 		public float MoveSpeed = 4.0f;
 		[Tooltip("Sprint speed of the character in m/s")]
@@ -121,6 +131,9 @@ namespace StarterAssets
 			_jumpTimeoutDelta = JumpTimeout;
 			_fallTimeoutDelta = FallTimeout;
 
+			// assign script for modifier
+			_moveModifier = GetComponent<MoveModifier>();
+
 		}
 
 		private void Update()
@@ -183,36 +196,69 @@ namespace StarterAssets
 			float speedOffset = 0.1f;
 			float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
 
-
-			// accelerate or decelerate to target speed
-			if (currentHorizontalSpeed < targetSpeed - speedOffset || currentHorizontalSpeed > targetSpeed + speedOffset)
+			//if not passed out move regularly esle decelerate till 0
+			if (!passOutScript.value)
 			{
+				// accelerate or decelerate to target speed
+				if (currentHorizontalSpeed < targetSpeed - speedOffset || currentHorizontalSpeed > targetSpeed + speedOffset)
+				{
+					// creates curved result rather than a linear one giving a more organic speed change
+					// note T in Lerp is clamped, so we don't need to clamp our speed
+					_speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude, Time.deltaTime * SpeedChangeRate);
+
+					// round speed to 3 decimal places
+					_speed = Mathf.Round(_speed * 1000f) / 1000f;
+				}
+				else
+				{
+					_speed = targetSpeed;
+				}
+
+
+                // normalise input direction
+                Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
+
+                // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
+                // if there is a move input rotate player when the player is moving
+                if (_input.move != Vector2.zero)
+                {
+                    // move
+                    inputDirection = transform.right * _input.move.x + transform.forward * _input.move.y;
+                }
+
+				if (Grounded)
+				{
+					//set stored speed value and direction input
+					storedHorizontalVelocity = _speed;
+					lastInputDirection = inputDirection;
+				}
+
+                // move the player
+                _controller.Move(lastInputDirection.normalized * (_moveModifier.GetMoveModified(storedHorizontalVelocity) * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+            }
+			else
+			{
+
+				// set target speed to 0 to deccelerate
+				targetSpeed = 0f;
+
 				// creates curved result rather than a linear one giving a more organic speed change
 				// note T in Lerp is clamped, so we don't need to clamp our speed
-				_speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude, Time.deltaTime * SpeedChangeRate);
+				_speed = Mathf.Lerp(storedHorizontalVelocity, targetSpeed * inputMagnitude, Time.deltaTime * passedOutDeccel);
 
 				// round speed to 3 decimal places
 				_speed = Mathf.Round(_speed * 1000f) / 1000f;
-			}
-			else
-			{
-				_speed = targetSpeed;
-			}
+                Debug.Log(_speed);
 
-            // normalise input direction
-            Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
+                // update stored speed value
+                storedHorizontalVelocity = _speed;
 
-			// note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-			// if there is a move input rotate player when the player is moving
-			if (_input.move != Vector2.zero)
-			{
-				// move
-				inputDirection = transform.right * _input.move.x + transform.forward * _input.move.y;
-			}
+				
+            }
 
-			// move the player
-			_controller.Move(inputDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
-		}
+            // move the player
+            _controller.Move(lastInputDirection.normalized * (_moveModifier.GetMoveModified(storedHorizontalVelocity) * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+        }
 
 		private void JumpAndGravity()
 		{
@@ -231,7 +277,8 @@ namespace StarterAssets
 				if (_input.jump && _jumpTimeoutDelta <= 0.0f)
 				{
 					// the square root of H * -2 * G = how much velocity needed to reach desired height
-					_verticalVelocity = Mathf.Sqrt(JumpHeight * ((bloodScript.heartRate/2) + lungscript.oxygenCapacity + 0.25f) * -2f * Gravity);
+					//James - Jump Height Scales with heart Rate make equation that sets min and max based on min and max heart rate. Lung capacity scales 0 to 1 on how much of that height is used
+					_verticalVelocity = Mathf.Sqrt( _moveModifier.GetJumpModified(JumpHeight) * -2f * Gravity);
 				}
 
 				// jump timeout
